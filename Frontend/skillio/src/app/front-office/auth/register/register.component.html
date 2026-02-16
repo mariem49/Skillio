@@ -1,0 +1,76 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-navy-900 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white dark:bg-navy-800 p-8 rounded-xl shadow-card">
+        <div>
+            <h2 class="mt-6 text-center text-3xl font-heading font-extrabold text-navy-900 dark:text-white">
+                Create your account
+            </h2>
+            <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                Already have an account?
+                <a routerLink="/auth/login" class="font-medium text-violet-600 hover:text-violet-500 transition-colors">
+                    Sign in
+                </a>
+            </p>
+        </div>
+
+        <form class="mt-8 space-y-4" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <!-- Role Selection -->
+            <mat-button-toggle-group formControlName="role" aria-label="Role" class="role-toggle w-full flex">
+                <mat-button-toggle value="STUDENT" class="flex-1">Student</mat-button-toggle>
+                <mat-button-toggle value="TRAINER" class="flex-1">Trainer</mat-button-toggle>
+                <mat-button-toggle value="ENTERPRISE" class="flex-1">Enterprise</mat-button-toggle>
+            </mat-button-toggle-group>
+
+            <div class="grid grid-cols-2 gap-4">
+                <mat-form-field appearance="outline">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="firstName" required>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lastName" required>
+                </mat-form-field>
+            </div>
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Email address</mat-label>
+                <input matInput formControlName="email" type="email" required>
+                @if (registerForm.get('email')?.hasError('email')) {
+                <mat-error>Invalid email format</mat-error>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-full">
+                <mat-label>Password</mat-label>
+                <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" required>
+                <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword"
+                    [attr.aria-label]="'Hide password'" type="button">
+                    <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+                @if (registerForm.get('password')?.hasError('minlength')) {
+                <mat-error>Password must be at least 6 characters</mat-error>
+                }
+            </mat-form-field>
+
+            <div class="flex items-center">
+                <mat-checkbox color="primary" formControlName="terms">
+                    I agree to the <a href="#" class="text-violet-600 hover:text-violet-500">Terms</a> and <a href="#"
+                        class="text-violet-600 hover:text-violet-500">Privacy Policy</a>
+                </mat-checkbox>
+            </div>
+
+            <button type="submit" [disabled]="registerForm.invalid || isLoading"
+                class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed">
+                @if (isLoading) {
+                <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                    <mat-progress-spinner diameter="20" color="accent" mode="indeterminate"></mat-progress-spinner>
+                </span>
+                Creating account...
+                } @else {
+                Create Account
+                }
+            </button>
+        </form>
+    </div>
+</div>

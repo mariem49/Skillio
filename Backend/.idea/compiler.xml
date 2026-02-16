@@ -6,9 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Entreprise" />
         <module name="eurekaServer" />
+        <module name="gateway" />
       </profile>
-      <profile name="Annotation profile for Training" enabled="true">
+      <profile name="Annotation profile for subscription" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -17,16 +19,20 @@
         </processorPath>
         <module name="Training" />
         <module name="Event" />
+        <module name="subscription" />
         <module name="User" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Entreprise" options="-parameters" />
       <module name="Event" options="-parameters" />
       <module name="Training" options="-parameters" />
       <module name="User" options="-parameters" />
       <module name="eurekaServer" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="subscription" options="-parameters" />
     </option>
   </component>
 </project>
