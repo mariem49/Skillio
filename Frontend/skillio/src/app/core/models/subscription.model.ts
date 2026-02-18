@@ -3,13 +3,12 @@ export interface Subscription {
     userId: number;
     userRole: string;
     planId: number;
-    billingCycle: 'MONTHLY' | 'YEARLY';
-    status: 'ACTIVE' | 'CANCELLED' | 'EXPIRED';
+    billingCycle: string;
+    status: string;
     startDate: string;
-    endDate?: string;
-    createdAt?: string;
+    endDate: string;
+    createdAt: string;
 
     // Optional for frontend display
     planName?: string;
-    planPrice?: number;
 }

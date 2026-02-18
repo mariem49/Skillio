@@ -5,11 +5,11 @@ export interface Company {
     industry: string;
     location: string;
     website: string;
-    logoUrl: string;
+    logoUrl?: string; // Included as it exists in backend
     email: string;
     phone: string;
     enterpriseUserId: number;
-    createdAt?: string;
+    createdAt: string;
 
     // Optional frontend fields
     jobOffersCount?: number;

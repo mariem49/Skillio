@@ -329,7 +329,7 @@ export class PricingComponent {
   rawPlans = this.pricingService.plans;
 
   plans = computed(() => {
-    return this.rawPlans().map(plan => ({
+    return this.rawPlans().map((plan: PricingPlan) => ({
       ...plan,
       featuresList: this.parseFeatures(plan.features)
     }));

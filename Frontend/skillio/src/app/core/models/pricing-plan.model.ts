@@ -8,6 +8,6 @@ export interface PricingPlan {
     isActive: boolean;
     highlight: boolean;
 
-    // Helper for frontend logic to parse features string
-    featuresList?: { name: string; included: boolean }[];
+    // Helper for frontend logic
+    featuresList?: string[];
 }

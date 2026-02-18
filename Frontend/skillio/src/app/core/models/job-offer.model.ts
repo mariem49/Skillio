@@ -2,21 +2,19 @@ export interface JobOffer {
     id: number;
     title: string;
     description: string;
-    contractType: 'CDI' | 'CDD' | 'INTERNSHIP' | 'FREELANCE';
+    contractType: string; // CDI, CDD, etc.
     location: string;
     salary: number;
-    remote: 'ON_SITE' | 'HYBRID' | 'FULL_REMOTE';
+    remote: string; // ON_SITE, HYBRID, etc.
     requirements: string;
     companyId: number;
-    createdAt?: string;
+    createdAt: string;
     isActive: boolean;
 
     // Optional frontend fields
     companyName?: string;
     companyLogo?: string;
     matchingScore?: number;
-
-    // Missing fields used in MatchingService
     requiredSkills?: string[];
     requiredLevel?: string;
     experienceYears?: number;
