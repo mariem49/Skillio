@@ -1,13 +1,16 @@
 export interface Company {
     id: number;
     name: string;
-    logo: string;
     description: string;
-    industry: 'tech' | 'finance' | 'healthcare' | 'education' | 'other';
-    size: '1-10' | '11-50' | '51-200' | '200+';
+    industry: string;
     location: string;
-    website?: string;
-    email?: string;
-    status: 'active' | 'inactive';
+    website: string;
+    logoUrl: string;
+    email: string;
+    phone: string;
+    enterpriseUserId: number;
+    createdAt?: string;
+
+    // Optional frontend fields
     jobOffersCount?: number;
 }

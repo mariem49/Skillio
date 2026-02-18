@@ -87,5 +87,6 @@ export const routes: Routes = [
     },
 
     // Fallback
+    { path: 'crud-test', loadComponent: () => import('./test/crud-test.component').then(m => m.CrudTestComponent) },
     { path: '**', redirectTo: '' }
 ];

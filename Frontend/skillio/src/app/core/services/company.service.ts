@@ -1,56 +1,43 @@
-import { Injectable, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Company } from '../models/company.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class CompanyService {
-    private mockCompanies = signal<Company[]>([
-        {
-            id: 1,
-            name: 'TechCorp',
-            logo: 'https://ui-avatars.com/api/?name=TechCorp&background=random',
-            description: 'Leading provider of cloud solutions.',
-            industry: 'tech',
-            size: '51-200',
-            location: 'Paris, France',
-            website: 'https://techcorp.com',
-            status: 'active',
-            jobOffersCount: 5
-        },
-        {
-            id: 2,
-            name: 'GreenFinance',
-            logo: 'https://ui-avatars.com/api/?name=GreenFinance&background=random',
-            description: 'Sustainable finance for a better future.',
-            industry: 'finance',
-            size: '200+',
-            location: 'Lyon, France',
-            website: 'https://greenfi.com',
-            status: 'active',
-            jobOffersCount: 2
-        },
-        {
-            id: 3,
-            name: 'EduLearn',
-            logo: 'https://ui-avatars.com/api/?name=EduLearn&background=random',
-            description: 'EdTech platform transforming education.',
-            industry: 'education',
-            size: '11-50',
-            location: 'Remote',
-            status: 'active',
-            jobOffersCount: 8
-        }
-    ]);
+    private http = inject(HttpClient);
+    private apiUrl = `${environment.apiUrl}/entreprise/companies`;
 
+    // Get all companies
     getAll(): Observable<Company[]> {
-        return of(this.mockCompanies()).pipe(delay(500));
+        return this.http.get<Company[]>(this.apiUrl);
     }
 
-    getById(id: number): Observable<Company | undefined> {
-        const company = this.mockCompanies().find(c => c.id === Number(id));
-        return of(company).pipe(delay(400));
+    // Get company by ID
+    getById(id: number): Observable<Company> {
+        return this.http.get<Company>(`${this.apiUrl}/${id}`);
+    }
+
+    // Get company by enterprise user ID
+    getByEnterpriseUserId(userId: number): Observable<Company> {
+        return this.http.get<Company>(`${this.apiUrl}/user/${userId}`);
+    }
+
+    // Create new company
+    create(company: Partial<Company>): Observable<Company> {
+        return this.http.post<Company>(this.apiUrl, company);
+    }
+
+    // Update existing company
+    update(id: number, company: Partial<Company>): Observable<Company> {
+        return this.http.put<Company>(`${this.apiUrl}/${id}`, company);
+    }
+
+    // Delete company
+    delete(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
     }
 }

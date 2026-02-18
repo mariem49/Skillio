@@ -57,7 +57,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
                     <div class="bg-white dark:bg-navy-800 rounded-2xl p-6 border border-gray-100 dark:border-navy-700 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 group">
                         <div class="flex items-start justify-between mb-6">
                             <div class="w-16 h-16 rounded-xl bg-gray-50 p-2 border border-gray-100 dark:border-navy-700">
-                                <img [src]="company.logo" [alt]="company.name" class="w-full h-full object-contain rounded-lg">
+                                <img [src]="company.logoUrl" [alt]="company.name" class="w-full h-full object-contain rounded-lg">
                             </div>
                             <span class="px-3 py-1 rounded-full bg-violet-50 text-violet-600 text-xs font-bold uppercase tracking-wide">
                                 {{ company.industry }}

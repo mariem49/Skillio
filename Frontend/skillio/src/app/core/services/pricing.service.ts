@@ -1,65 +1,72 @@
-import { Injectable, signal } from '@angular/core';
-
-export interface PricingPlan {
-    id: string;
-    name: string;
-    description: string;
-    monthlyPrice: number;
-    yearlyPrice: number;
-    features: { name: string; included: boolean }[];
-    highlight?: boolean;
-}
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
+import { PricingPlan } from '../models/pricing-plan.model';
+import { Subscription } from '../models/subscription.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class PricingService {
-    readonly plans = signal<PricingPlan[]>([
-        {
-            id: 'basic',
-            name: 'Basic Plan',
-            description: 'Perfect for getting started',
-            monthlyPrice: 20,
-            yearlyPrice: 192, // 20% discount: 20 * 12 * 0.8
-            features: [
-                { name: 'Access to free courses', included: true },
-                { name: 'Limited course materials', included: true },
-                { name: 'Basic support', included: true },
-                { name: 'Certificate of completion', included: false },
-                { name: '1-on-1 Mentorship', included: false },
-                { name: 'Offline access', included: false },
-            ]
-        },
-        {
-            id: 'pro',
-            name: 'Professional Plan',
-            description: 'Best for career growth',
-            monthlyPrice: 59,
-            yearlyPrice: 566, // 20% discount
-            highlight: true,
-            features: [
-                { name: 'Access to all courses', included: true },
-                { name: 'Full course materials', included: true },
-                { name: 'Priority support', included: true },
-                { name: 'Certificate of completion', included: true },
-                { name: '1-on-1 Mentorship', included: false },
-                { name: 'Offline access', included: false },
-            ]
-        },
-        {
-            id: 'premium',
-            name: 'Premium Plan',
-            description: 'Complete mastery package',
-            monthlyPrice: 99,
-            yearlyPrice: 950, // 20% discount
-            features: [
-                { name: 'Access to all courses', included: true },
-                { name: 'Full course materials', included: true },
-                { name: '24/7 Priority support', included: true },
-                { name: 'Certificate of completion', included: true },
-                { name: '1-on-1 Mentorship', included: true },
-                { name: 'Offline access', included: true },
-            ]
-        }
-    ]);
+    private http = inject(HttpClient);
+    private apiUrl = `${environment.apiUrl}/sub`;
+
+    readonly plans = signal<PricingPlan[]>([]);
+
+    loadPlans(): Observable<PricingPlan[]> {
+        return this.http.get<PricingPlan[]>(`${this.apiUrl}/plans`).pipe(
+            tap(plans => this.plans.set(plans))
+        );
+    }
+
+    getActivePlans(): Observable<PricingPlan[]> {
+        return this.http.get<PricingPlan[]>(`${this.apiUrl}/plans`);
+    }
+
+    getAllPlans(): Observable<PricingPlan[]> {
+        return this.http.get<PricingPlan[]>(`${this.apiUrl}/plans/all`);
+    }
+
+    getPlanById(id: number): Observable<PricingPlan> {
+        return this.http.get<PricingPlan>(`${this.apiUrl}/plans/${id}`);
+    }
+
+    createPlan(plan: Partial<PricingPlan>): Observable<PricingPlan> {
+        return this.http.post<PricingPlan>(`${this.apiUrl}/plans`, plan);
+    }
+
+    updatePlan(id: number, plan: Partial<PricingPlan>): Observable<PricingPlan> {
+        return this.http.put<PricingPlan>(`${this.apiUrl}/plans/${id}`, plan);
+    }
+
+    deletePlan(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/plans/${id}`);
+    }
+
+    subscribe(userId: number, userRole: string, planId: number, billingCycle: 'MONTHLY' | 'YEARLY'): Observable<Subscription> {
+        const subscriptionData = {
+            userId,
+            userRole,
+            planId,
+            billingCycle
+        };
+        return this.http.post<Subscription>(`${this.apiUrl}/subscriptions`, subscriptionData);
+    }
+
+    getAllSubscriptions(): Observable<Subscription[]> {
+        return this.http.get<Subscription[]>(`${this.apiUrl}/subscriptions`);
+    }
+
+    getCurrentSubscription(userId: number): Observable<Subscription> {
+        return this.http.get<Subscription>(`${this.apiUrl}/subscriptions/user/${userId}/current`);
+    }
+
+    cancelSubscription(id: number): Observable<void> {
+        return this.http.put<void>(`${this.apiUrl}/subscriptions/${id}/cancel`, {});
+    }
+
+    deleteSubscription(id: number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/subscriptions/${id}`);
+    }
 }

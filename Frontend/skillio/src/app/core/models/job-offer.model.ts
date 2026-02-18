@@ -1,21 +1,23 @@
 export interface JobOffer {
     id: number;
-    companyId: number;
-    companyName: string;
-    companyLogo: string;
     title: string;
     description: string;
-    contractType: 'CDI' | 'CDD' | 'Stage' | 'Alternance';
+    contractType: 'CDI' | 'CDD' | 'INTERNSHIP' | 'FREELANCE';
     location: string;
-    remote: 'no' | 'partial' | 'full-remote';
-    salary?: string;
-    duration?: string; // For Stage/CDD
-    startDate: string; // ISO Date
-    requiredLevel: 'Bac' | 'Bac+2' | 'Bac+3' | 'Bac+5';
-    experienceYears: number;
-    requiredSkills: string[];
-    requiredLanguages: { language: string; level: string }[];
-    postedAt: string;
-    matchingScore?: number; // Calculated on frontend
-    matchingReasons?: string[];
+    salary: number;
+    remote: 'ON_SITE' | 'HYBRID' | 'FULL_REMOTE';
+    requirements: string;
+    companyId: number;
+    createdAt?: string;
+    isActive: boolean;
+
+    // Optional frontend fields
+    companyName?: string;
+    companyLogo?: string;
+    matchingScore?: number;
+
+    // Missing fields used in MatchingService
+    requiredSkills?: string[];
+    requiredLevel?: string;
+    experienceYears?: number;
 }

@@ -1,0 +1,9 @@
+esprit\subscription\entity\PricingPlan.class
+esprit\subscription\service\SubscriptionService.class
+esprit\subscription\entity\Subscription.class
+esprit\subscription\service\PricingPlanService.class
+esprit\subscription\SubscriptionApplication.class
+esprit\subscription\config\DataInitializer.class
+esprit\subscription\repository\SubscriptionRepository.class
+esprit\subscription\controller\SubscriptionRESTApi.class
+esprit\subscription\repository\PricingPlanRepository.class

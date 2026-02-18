@@ -1,13 +1,14 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PricingService, PricingPlan } from '../../core/services/pricing.service';
+import { PricingService } from '../../core/services/pricing.service';
+import { PricingPlan } from '../../core/models/pricing-plan.model';
 
 @Component({
-    selector: 'app-pricing',
-    standalone: true,
-    imports: [CommonModule],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
+  selector: 'app-pricing',
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
     <div class="pricing-container">
       <!-- Header -->
       <div class="header-section">
@@ -62,7 +63,7 @@ import { PricingService, PricingPlan } from '../../core/services/pricing.service
             </button>
 
             <div class="features-list">
-              @for (feature of plan.features; track feature.name) {
+              @for (feature of plan.featuresList; track feature.name) {
                 <div class="feature-item" [class.excluded]="!feature.included">
                   @if (feature.included) {
                     <span class="check-icon">✓</span>
@@ -78,7 +79,7 @@ import { PricingService, PricingPlan } from '../../core/services/pricing.service
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     :host {
       display: block;
       min-height: 100vh;
@@ -323,12 +324,30 @@ import { PricingService, PricingPlan } from '../../core/services/pricing.service
   `]
 })
 export class PricingComponent {
-    private pricingService = inject(PricingService);
+  private pricingService = inject(PricingService);
 
-    plans = this.pricingService.plans;
-    billingCycle = signal<'monthly' | 'yearly'>('monthly');
+  rawPlans = this.pricingService.plans;
 
-    setBilling(cycle: 'monthly' | 'yearly') {
-        this.billingCycle.set(cycle);
-    }
+  plans = computed(() => {
+    return this.rawPlans().map(plan => ({
+      ...plan,
+      featuresList: this.parseFeatures(plan.features)
+    }));
+  });
+
+  billingCycle = signal<'monthly' | 'yearly'>('monthly');
+
+  setBilling(cycle: 'monthly' | 'yearly') {
+    this.billingCycle.set(cycle);
+  }
+
+  private parseFeatures(features: string): { name: string, included: boolean }[] {
+    if (!features) return [];
+    // Assuming features are comma separated strings
+    // If string starts with "!" it's excluded (optional logic, but simple defaults to included)
+    return features.split(',').map(f => {
+      const name = f.trim();
+      return { name, included: true };
+    });
+  }
 }

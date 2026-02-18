@@ -32,6 +32,18 @@ import { MatIconModule } from '@angular/material/icon';
         <div class="px-4 mt-6 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
           Management
         </div>
+        <a routerLink="/admin/companies" routerLinkActive="bg-navy-800 text-white border-l-4 border-blue-500" class="flex items-center px-6 py-3 hover:bg-navy-800 hover:text-white transition-colors group border-l-4 border-transparent">
+          <mat-icon class="mr-3 text-gray-400 group-hover:text-blue-400">business</mat-icon>
+          Companies
+        </a>
+        <a routerLink="/admin/job-offers" routerLinkActive="bg-navy-800 text-white border-l-4 border-blue-500" class="flex items-center px-6 py-3 hover:bg-navy-800 hover:text-white transition-colors group border-l-4 border-transparent">
+          <mat-icon class="mr-3 text-gray-400 group-hover:text-blue-400">work</mat-icon>
+          Job Offers
+        </a>
+         <a routerLink="/admin/pricing" routerLinkActive="bg-navy-800 text-white border-l-4 border-blue-500" class="flex items-center px-6 py-3 hover:bg-navy-800 hover:text-white transition-colors group border-l-4 border-transparent">
+          <mat-icon class="mr-3 text-gray-400 group-hover:text-blue-400">monetization_on</mat-icon>
+          Pricing Plans
+        </a>
         <a routerLink="/admin/users" routerLinkActive="bg-navy-800 text-white border-l-4 border-blue-500" class="flex items-center px-6 py-3 hover:bg-navy-800 hover:text-white transition-colors group border-l-4 border-transparent">
           <mat-icon class="mr-3 text-gray-400 group-hover:text-blue-400">people</mat-icon>
           Users
