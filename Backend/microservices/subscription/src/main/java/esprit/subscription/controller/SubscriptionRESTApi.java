@@ -1,5 +1,6 @@
 package esprit.subscription.controller;
 
+import esprit.subscription.DTO.subb;
 import esprit.subscription.entity.PricingPlan;
 import esprit.subscription.entity.Subscription;
 import esprit.subscription.service.PricingPlanService;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -87,10 +89,43 @@ public class SubscriptionRESTApi {
     }
 
     @PostMapping("/subscriptions")
-    public ResponseEntity<Subscription> createSubscription(@RequestBody Subscription subscription) {
+    public ResponseEntity<Subscription> createSubscription(@RequestBody subb subs) {
+
+        // Vérifier si le plan existe
+        PricingPlan plan = pricingPlanService.findById(subs.getPlanId())
+                .orElseThrow(() -> new RuntimeException("Pricing plan not found"));
+
+        Subscription subscription = new Subscription();
+
+        subscription.setUserId(subs.getUserId());
+        subscription.setUserRole(subs.getUserRole());
+        subscription.setPricingPlan(plan);
+        subscription.setBillingCycle(subs.getBillingCycle());
+
+        // Date de début
+        LocalDateTime now = LocalDateTime.now();
+        subscription.setStartDate(now);
+
+        // Calcul de la date de fin selon le billingCycle
+        if ("MONTHLY".equalsIgnoreCase(subs.getBillingCycle())) {
+            subscription.setEndDate(now.plusMonths(1));
+        } else if ("YEARLY".equalsIgnoreCase(subs.getBillingCycle())) {
+            subscription.setEndDate(now.plusYears(1));
+        } else {
+            throw new RuntimeException("Invalid billing cycle");
+        }
+
+        // Status par défaut
+        subscription.setStatus("ACTIVE");
+
+        // Date de création
+        subscription.setCreatedAt(now);
+
         Subscription createdSubscription = subscriptionService.subscribe(subscription);
+
         return new ResponseEntity<>(createdSubscription, HttpStatus.CREATED);
     }
+
 
     @PutMapping("/subscriptions/{id}/cancel")
     public ResponseEntity<Subscription> cancelSubscription(@PathVariable Long id) {

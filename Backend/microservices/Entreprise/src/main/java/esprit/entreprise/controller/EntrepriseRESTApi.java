@@ -1,5 +1,6 @@
 package esprit.entreprise.controller;
 
+import esprit.entreprise.DTO.JobOfferDTO;
 import esprit.entreprise.entity.Company;
 import esprit.entreprise.entity.JobOffer;
 import esprit.entreprise.service.CompanyService;
@@ -86,9 +87,26 @@ public class EntrepriseRESTApi {
     }
 
     @PostMapping("/job-offers")
-    public ResponseEntity<JobOffer> createJobOffer(@RequestBody JobOffer jobOffer) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(jobOfferService.save(jobOffer));
+    public ResponseEntity<JobOffer> createJobOffer(@RequestBody JobOfferDTO jobOfferDTO) {
+        JobOffer jobOffer = new JobOffer();
+        jobOffer.setTitle(jobOfferDTO.getTitle());
+        jobOffer.setDescription(jobOfferDTO.getDescription());
+        jobOffer.setContractType(jobOfferDTO.getContractType());
+        jobOffer.setLocation(jobOfferDTO.getLocation());
+        jobOffer.setSalary(jobOfferDTO.getSalary());
+        jobOffer.setRemote(jobOfferDTO.getRemote());
+        jobOffer.setRequirements(jobOfferDTO.getRequirements());
+        jobOffer.setIsActive(jobOfferDTO.getIsActive() != null ? jobOfferDTO.getIsActive() : true);
+
+        // Associer la company
+        Company company = companyService.findById(jobOfferDTO.getCompanyId())
+                .orElseThrow(() -> new RuntimeException("Company not found with ID " + jobOfferDTO.getCompanyId()));
+        jobOffer.setCompany(company);
+
+        JobOffer saved = jobOfferService.save(jobOffer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
+
 
     @PutMapping("/job-offers/{id}")
     public ResponseEntity<JobOffer> updateJobOffer(@PathVariable Long id, @RequestBody JobOffer jobOffer) {

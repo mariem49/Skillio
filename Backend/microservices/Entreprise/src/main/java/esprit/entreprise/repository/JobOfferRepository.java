@@ -10,8 +10,7 @@ import java.util.List;
 
 @Repository
 public interface JobOfferRepository extends JpaRepository<JobOffer, Long> {
-    List<JobOffer> findByCompanyId(Long companyId);
-    
+    List<JobOffer> findByCompany_Id(Long companyId);
     @Query("SELECT j FROM JobOffer j WHERE (:contractType IS NULL OR j.contractType = :contractType) AND (:location IS NULL OR j.location = :location) AND (:remote IS NULL OR j.remote = :remote)")
     List<JobOffer> findByFilters(@Param("contractType") String contractType, @Param("location") String location, @Param("remote") String remote);
 }

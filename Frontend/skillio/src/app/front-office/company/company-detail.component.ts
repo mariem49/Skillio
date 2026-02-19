@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CompanyService } from '../../core/services/company.service';
 import { JobOfferService } from '../../core/services/job-offer.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-company-detail',
@@ -107,18 +108,39 @@ import { JobOfferService } from '../../core/services/job-offer.service';
   `
 })
 export class CompanyDetailComponent implements OnInit {
-    private companyService = inject(CompanyService);
-    private jobOfferService = inject(JobOfferService);
+ 
+  private companyService = inject(CompanyService);
+  private jobOfferService = inject(JobOfferService);
+  private route = inject(ActivatedRoute);
 
-    @Input() id!: string; // Router param is string
+  company = signal<any>(null);
+  offers = signal<any[]>([]);
 
-    company = signal<any>(null);
-    offers = signal<any[]>([]);
+  ngOnInit(): void {
+console.log("CompanyDetailComponent chargé");
+this.route.paramMap.subscribe(params => {
+    console.log("ParamMap =", params);
+    console.log("ID récupéré =", params.get('id'));
+  });
+    this.route.paramMap.subscribe(params => {
 
-    ngOnInit() {
-        if (this.id) {
-            this.companyService.getById(Number(this.id)).subscribe(c => this.company.set(c));
-            this.jobOfferService.getByCompany(Number(this.id)).subscribe(o => this.offers.set(o));
-        }
-    }
+      const id = params.get('id');
+
+      if (!id) return;
+
+      const companyId = Number(id);
+
+      this.companyService.getById(companyId).subscribe({
+        next: (company) => this.company.set(company),
+        error: (err) => console.error('Erreur company', err)
+      });
+
+      this.jobOfferService.getByCompany(companyId).subscribe({
+        next: (offers) => this.offers.set(offers),
+        error: (err) => console.error('Erreur offers', err)
+      });
+
+    });
+  }
 }
+

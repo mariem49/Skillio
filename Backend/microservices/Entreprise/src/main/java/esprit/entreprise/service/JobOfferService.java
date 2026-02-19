@@ -27,7 +27,7 @@ public class JobOfferService {
     }
 
     public List<JobOffer> findByCompanyId(Long companyId) {
-        return jobOfferRepository.findByCompanyId(companyId);
+        return jobOfferRepository.findByCompany_Id(companyId);
     }
 
     @Transactional
