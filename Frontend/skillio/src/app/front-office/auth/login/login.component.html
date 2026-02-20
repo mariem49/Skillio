@@ -1,0 +1,63 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-navy-900 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 bg-white dark:bg-navy-800 p-8 rounded-xl shadow-card">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-heading font-extrabold text-navy-900 dark:text-white">
+        Welcome back
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+        Or
+        <a routerLink="/auth/register" class="font-medium text-violet-600 hover:text-violet-500 transition-colors">
+          start your free trial
+        </a>
+      </p>
+    </div>
+    <form class="mt-8 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Email address</mat-label>
+          <input matInput formControlName="email" type="email" autocomplete="email" required>
+          @if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
+            <mat-error>Please enter a valid email</mat-error>
+          }
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="w-full mt-4">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" required>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          @if (loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <mat-checkbox color="primary" formControlName="rememberMe">Remember me</mat-checkbox>
+        </div>
+
+        <div class="text-sm">
+          <a routerLink="/auth/forgot-password" class="font-medium text-violet-600 hover:text-violet-500">
+            Forgot your password?
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" [disabled]="loginForm.invalid || isLoading"
+          class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-violet-500 transition-all shadow-lg hover:shadow-xl disabled:opacity-70 disabled:cursor-not-allowed">
+          @if (isLoading) {
+            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+              <mat-spinner diameter="20" color="accent"></mat-spinner>
+            </span>
+            Signing in...
+          } @else {
+            Sign in
+          }
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

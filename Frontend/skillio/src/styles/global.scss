@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --c-primary: #6C3FC5;
+    --c-primary-lt: #A855F7;
+    --c-primary-xl: #EDE9FE;
+    --c-accent: #F59E0B;
+    --c-bg: #F5F3FF;
+    --c-dark: #1E1B4B;
+    --c-gray: #6B7280;
+    --c-error: #EF4444;
+    --c-success: #10B981;
+    --c-border: rgba(108, 63, 197, 0.2);
+    --c-shadow: 0 8px 32px rgba(108, 63, 197, 0.18);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--c-dark);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-heading {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Animations */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes float-1 {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-14px)
+    }
+}
+
+@keyframes float-2 {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-22px)
+    }
+}
+
+@keyframes float-3 {
+
+    0%,
+    100% {
+        transform: translateY(0)
+    }
+
+    50% {
+        transform: translateY(-10px)
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes scale-in {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.animate-fade-slide-up {
+    animation: fadeSlideUp 0.4s ease-out forwards;
+}

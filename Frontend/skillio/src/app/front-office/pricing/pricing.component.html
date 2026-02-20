@@ -1,0 +1,61 @@
+<div class="pricing-container">
+  <!-- Header -->
+  <div class="header-section">
+    <h1>Pricing Plans</h1>
+    <p class="subtitle">Choose the plan that fits your needs</p>
+  </div>
+
+  <!-- Billing Toggle -->
+  <div class="toggle-container">
+    <div class="toggle-bg">
+      <button [class.active]="billingCycle() === 'monthly'"
+              (click)="setBilling('monthly')"
+              class="toggle-btn">Monthly</button>
+      <button [class.active]="billingCycle() === 'yearly'"
+              (click)="setBilling('yearly')"
+              class="toggle-btn">
+        Yearly <span class="badge">Save 20%</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pricing Cards -->
+  <div class="cards-grid">
+    <div *ngFor="let p of plansForDisplay()">
+      <div class="pricing-card" [class.highlight]="p.plan.highlight">
+
+        <div *ngIf="p.plan.highlight" class="highlight-badge">Most Popular</div>
+
+        <div class="card-header">
+          <h3>{{ p.plan.name }}</h3>
+          <p class="desc">{{ p.plan.description }}</p>
+        </div>
+
+        <div class="price-section">
+          <span class="currency">$</span>
+          <span class="amount">
+            {{ billingCycle() === 'monthly' ? p.plan.monthlyPrice : (p.plan.yearlyPrice / 12 | number:'1.0-0') }}
+          </span>
+          <span class="period">/mo</span>
+          <div *ngIf="billingCycle() === 'yearly'" class="billed-yearly">
+            Billed ${{ p.plan.yearlyPrice }} yearly
+          </div>
+        </div>
+
+        <button class="select-btn" [class.outline]="!p.plan.highlight"
+                (click)="subscribeToPlan(p.plan)">
+          Select Plan
+        </button>
+
+        <div class="features-list">
+          <div *ngFor="let feature of p.featuresList" [class.excluded]="!feature.included" class="feature-item">
+            <span *ngIf="feature.included" class="check-icon">✓</span>
+            <span *ngIf="!feature.included" class="cross-icon">×</span>
+            {{ feature.name }}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+@use '@angular/material' as mat;
+@use './styles/themes' as themes;
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+@include mat.core();
+
+
+// Define the theme object.
+$eduport-theme: mat.m2-define-light-theme((color: (primary: themes.$eduport-violet-palette,
+                accent: themes.$eduport-violet-accent,
+                warn: themes.$eduport-violet-warn,
+            ),
+            typography: mat.m2-define-typography-config(),
+            density: 0));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+// Default theme (Violet)
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+@include mat.all-component-themes($eduport-theme);
+
+// Scoped Back Office Theme
+.back-office-theme {
+    $bo-theme: mat.m2-define-dark-theme((color: (primary: themes.$eduport-navy-palette,
+                    accent: themes.$eduport-navy-accent,
+                    warn: themes.$eduport-navy-warn,
+                )));
+    @include mat.all-component-themes($bo-theme);
+}
+
+/* Import Global Styles (Tailwind & Overrides) */
+@import './styles/global.scss';
