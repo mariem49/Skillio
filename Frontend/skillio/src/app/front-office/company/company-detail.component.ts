@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
     standalone: true,
     imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
     template: `
+    
     @if (company(); as comp) {
         <div class="bg-gray-50 dark:bg-navy-900 min-h-screen pb-20">
             <!-- Header Banner -->

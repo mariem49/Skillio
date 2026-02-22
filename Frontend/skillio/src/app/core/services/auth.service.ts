@@ -79,4 +79,8 @@ export class AuthService {
 
         return of(user).pipe(delay(800));
     }
+    getUserId(): number | null {
+  const user = this._user();
+  return user ? Number(user.id) : null;
+}
 }

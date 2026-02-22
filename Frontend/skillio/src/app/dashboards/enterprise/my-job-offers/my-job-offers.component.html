@@ -1,0 +1,316 @@
+<div class="my-job-offers">
+
+  <!-- ═══ PAGE HEADER ═══ -->
+  <div class="page-header">
+    <div class="page-header-left">
+      <h2 class="page-title">My Job Offers</h2>
+      <span class="offer-count-badge" *ngIf="offers().length > 0">{{ offers().length }}</span>
+    </div>
+    <button mat-raised-button color="primary" class="toggle-btn" (click)="toggleForm()">
+      <mat-icon>{{ showForm() ? 'close' : 'add' }}</mat-icon>
+      {{ showForm() ? 'Cancel' : 'Add an Offer' }}
+    </button>
+  </div>
+
+  <!-- ═══ FORM PANEL ═══ -->
+  <div *ngIf="showForm()" class="offer-form mat-elevation-z2">
+
+    <div class="form-header">
+      <div class="form-header-icon">
+        <mat-icon>{{ isEditing() ? 'edit' : 'post_add' }}</mat-icon>
+      </div>
+      <h3 class="form-title">{{ isEditing() ? 'Edit Offer' : 'New Job Offer' }}</h3>
+    </div>
+
+    <!-- ══ SECTION 1: General Information ══ -->
+    <div class="form-section" [formGroup]="offerForm">
+      <h4 class="section-label">
+        <span class="section-dot blue"></span>
+        General Information
+      </h4>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Job Title</mat-label>
+        <input matInput formControlName="title" list="titles"
+          placeholder="e.g. Angular Developer">
+        <datalist id="titles">
+          <option *ngFor="let t of titleSuggestions" [value]="t"></option>
+        </datalist>
+        <mat-error *ngIf="offerForm.get('title')?.hasError('required')">
+          Job title is required
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Job Description</mat-label>
+        <textarea matInput formControlName="description" rows="4"
+          placeholder="Describe the missions and responsibilities..."></textarea>
+        <mat-error *ngIf="offerForm.get('description')?.hasError('required')">
+          Description is required
+        </mat-error>
+      </mat-form-field>
+
+      <div class="form-row three-col">
+        <mat-form-field appearance="outline">
+          <mat-label>Contract Type</mat-label>
+          <input matInput formControlName="contractType" list="contractTypes">
+          <datalist id="contractTypes">
+            <option value="Full-time"></option>
+            <option value="Part-time"></option>
+            <option value="Internship"></option>
+            <option value="Apprenticeship"></option>
+            <option value="Freelance"></option>
+            <option value="Temporary"></option>
+          </datalist>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Work Mode</mat-label>
+          <mat-select formControlName="remote">
+            <mat-option value="ON_SITE">🏢 On-site</mat-option>
+            <mat-option value="REMOTE">🏠 Remote</mat-option>
+            <mat-option value="HYBRID">🔀 Hybrid</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Annual Salary (€)</mat-label>
+          <input matInput type="number" formControlName="salary" placeholder="e.g. 45000">
+          <span matSuffix class="salary-suffix">€/yr</span>
+        </mat-form-field>
+      </div>
+
+      <mat-checkbox formControlName="isActive" color="primary" class="active-checkbox">
+        Active offer (visible to applicants)
+      </mat-checkbox>
+    </div>
+
+    <!-- ══ SECTION 2: Location + Map ══ -->
+    <div class="form-section" [formGroup]="offerForm">
+      <h4 class="section-label">
+        <span class="section-dot red"></span>
+        Location
+      </h4>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>City / Address</mat-label>
+        <input matInput formControlName="location"
+          placeholder="Type a city or click on the map...">
+        <mat-hint>Click on the map to auto-fill this field</mat-hint>
+      </mat-form-field>
+
+      <div class="map-container">
+        <div id="location-map"></div>
+        <div class="map-hint-overlay" *ngIf="!mapClickedOnce">
+          <mat-icon>touch_app</mat-icon>
+          <span>Click anywhere on the map to pin a location</span>
+        </div>
+      </div>
+
+      <div class="coords-display" *ngIf="selectedLat !== null">
+        <mat-icon>pin_drop</mat-icon>
+        <span>
+          Lat: <strong>{{ selectedLat | number:'1.4-4' }}</strong>
+          &nbsp;|&nbsp;
+          Lng: <strong>{{ selectedLng | number:'1.4-4' }}</strong>
+        </span>
+        <button mat-icon-button type="button" (click)="clearMapSelection()"
+          matTooltip="Clear location" class="coords-clear-btn">
+          <mat-icon>highlight_off</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 3: Technical Requirements (separate formGroup on div) ══ -->
+    <div class="form-section requirement-section">
+      <h4 class="section-label">
+        <span class="section-dot green"></span>
+        Technical Requirements
+      </h4>
+
+      <div [formGroup]="requirementForm" class="requirement-inputs">
+
+        <mat-form-field appearance="outline" class="req-field">
+          <mat-label>Experience Level</mat-label>
+          <mat-select formControlName="experience">
+            <mat-option value="Junior">🟢 Junior (0–2 yrs)</mat-option>
+            <mat-option value="Mid-level">🟡 Mid-level (3–5 yrs)</mat-option>
+            <mat-option value="Senior">🔴 Senior (6+ yrs)</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="req-field">
+          <mat-label>Technology / Language</mat-label>
+          <input matInput formControlName="technology" list="techSuggestions"
+            placeholder="e.g. Angular, Python...">
+          <datalist id="techSuggestions">
+            <option value="Angular"></option><option value="React"></option>
+            <option value="Vue.js"></option><option value="Next.js"></option>
+            <option value="Nuxt.js"></option><option value="Svelte"></option>
+            <option value="Node.js"></option><option value="NestJS"></option>
+            <option value="Spring Boot"></option><option value="Django"></option>
+            <option value="FastAPI"></option><option value="Laravel"></option>
+            <option value="ASP.NET Core"></option><option value="Express.js"></option>
+            <option value="TypeScript"></option><option value="JavaScript"></option>
+            <option value="Python"></option><option value="Java"></option>
+            <option value="C#"></option><option value="C++"></option>
+            <option value="Go (Golang)"></option><option value="Rust"></option>
+            <option value="PHP"></option><option value="Kotlin"></option>
+            <option value="Swift"></option><option value="Flutter"></option>
+            <option value="React Native"></option>
+            <option value="Machine Learning"></option><option value="Deep Learning"></option>
+            <option value="TensorFlow"></option><option value="PyTorch"></option>
+            <option value="Pandas"></option><option value="Scikit-learn"></option>
+            <option value="Apache Spark"></option>
+            <option value="Docker"></option><option value="Kubernetes"></option>
+            <option value="Terraform"></option><option value="Ansible"></option>
+            <option value="Jenkins"></option><option value="GitLab CI/CD"></option>
+            <option value="GitHub Actions"></option>
+            <option value="AWS"></option><option value="Azure"></option>
+            <option value="Google Cloud (GCP)"></option>
+            <option value="PostgreSQL"></option><option value="MySQL"></option>
+            <option value="MongoDB"></option><option value="Redis"></option>
+            <option value="Elasticsearch"></option><option value="Firebase"></option>
+            <option value="Cybersecurity"></option>
+            <option value="Penetration Testing"></option><option value="SIEM"></option>
+          </datalist>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="req-field">
+          <mat-label>Specific Skill (optional)</mat-label>
+          <input matInput formControlName="skill" list="skillSuggestions"
+            placeholder="e.g. RxJS, REST API...">
+          <datalist id="skillSuggestions">
+            <option value="Microservices Architecture"></option>
+            <option value="Hexagonal Architecture"></option>
+            <option value="Design Patterns (SOLID)"></option>
+            <option value="Domain Driven Design (DDD)"></option>
+            <option value="Test Driven Development (TDD)"></option>
+            <option value="Clean Architecture"></option>
+            <option value="RxJS"></option>
+            <option value="NgRx / State Management"></option>
+            <option value="Angular Material"></option>
+            <option value="Tailwind CSS"></option>
+            <option value="SCSS / SASS"></option>
+            <option value="REST API"></option>
+            <option value="GraphQL"></option>
+            <option value="WebSockets"></option>
+            <option value="OAuth2 / JWT"></option>
+            <option value="OpenAPI / Swagger"></option>
+            <option value="Jest"></option>
+            <option value="Cypress"></option>
+            <option value="Playwright"></option>
+            <option value="CI/CD Pipelines"></option>
+            <option value="Infrastructure as Code"></option>
+            <option value="Serverless"></option>
+            <option value="ETL Pipelines"></option>
+            <option value="Data Visualization"></option>
+            <option value="NLP"></option>
+            <option value="Computer Vision"></option>
+            <option value="Agile / Scrum"></option>
+            <option value="Kanban"></option>
+            <option value="Git / GitFlow"></option>
+          </datalist>
+        </mat-form-field>
+
+        <button mat-flat-button color="accent" type="button"
+          class="add-req-btn" (click)="addRequirementForm()">
+          <mat-icon>add_circle</mat-icon> Add
+        </button>
+      </div>
+
+      <!-- ✅ mat-chip-set for display only (no matChipInputFor needed) -->
+      <div *ngIf="requirementsList.length > 0" class="chips-wrapper">
+        <mat-chip-set>
+          <mat-chip *ngFor="let req of requirementsList" class="req-chip">
+            {{ req }}
+            <!-- ✅ plain button with static aria-label — no interpolation -->
+            <button matChipRemove type="button" aria-label="Remove requirement"
+              (click)="removeRequirement(req)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-set>
+      </div>
+      <p *ngIf="requirementsList.length === 0" class="no-req-hint">
+        No requirements added yet.
+      </p>
+    </div>
+
+    <!-- ══ PUBLISH BUTTON — fixed at the bottom of the panel ══ -->
+    <div class="form-actions">
+      <button mat-raised-button color="primary"
+        type="button"
+        [disabled]="offerForm.invalid"
+        (click)="onSubmit()">
+        <mat-icon>{{ isEditing() ? 'save' : 'publish' }}</mat-icon>
+        {{ isEditing() ? 'Update Offer' : 'Publish Offer' }}
+      </button>
+      <button mat-stroked-button type="button" (click)="resetForm()">
+        <mat-icon>refresh</mat-icon> Reset
+      </button>
+    </div>
+
+  </div><!-- END offer-form -->
+
+  <!-- ═══ OFFERS LIST ═══ -->
+  <div class="offers-list" *ngIf="offers().length > 0">
+    <h3 class="list-title">
+      Published Offers
+      <span class="offers-badge">{{ offers().length }}</span>
+    </h3>
+
+    <div class="offer-card mat-elevation-z1" *ngFor="let offer of offers()">
+      <div class="offer-card-header">
+        <div class="offer-title-block">
+          <span class="offer-title">{{ offer.title }}</span>
+          <span class="offer-contract-badge">{{ offer.contractType }}</span>
+          <span class="offer-status-badge" [class.inactive]="!offer.isActive">
+            <span class="status-dot" [class.inactive]="!offer.isActive"></span>
+            {{ offer.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </div>
+        <div class="offer-actions">
+          <button mat-icon-button color="primary" (click)="editOffer(offer)" matTooltip="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteOffer(offer.id)" matTooltip="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="offer-meta">
+        <span class="meta-item">
+          <mat-icon class="meta-icon">location_on</mat-icon>
+          {{ offer.location || 'Not specified' }}
+        </span>
+        <span class="meta-item">
+          <mat-icon class="meta-icon">home_work</mat-icon>
+          {{ offer.remote === 'ON_SITE' ? 'On-site' : offer.remote === 'REMOTE' ? 'Remote' : 'Hybrid' }}
+        </span>
+        <span class="meta-item" *ngIf="offer.salary">
+          <mat-icon class="meta-icon">euro</mat-icon>
+          {{ offer.salary | number }} / year
+        </span>
+      </div>
+
+      <p class="offer-description">{{ offer.description }}</p>
+
+      <div class="offer-requirements" *ngIf="offer.requirements">
+        <span class="req-label">Requirements:</span>
+        <mat-chip-set>
+          <mat-chip *ngFor="let r of offer.requirements.split(',')">{{ r.trim() }}</mat-chip>
+        </mat-chip-set>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ EMPTY STATE ═══ -->
+  <div *ngIf="offers().length === 0 && !showForm()" class="empty-state">
+    <mat-icon class="empty-icon">work_off</mat-icon>
+    <p>No offers published yet.</p>
+    <small>Click "Add an Offer" to get started.</small>
+  </div>
+
+</div>
